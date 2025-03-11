@@ -1,150 +1,243 @@
+* {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --danger-color: #e74c3c;
+    --success-color: #2ecc71;
+    --light-bg: #f5f6fa;
+}
 
-        * {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --danger-color: #e74c3c;
-            --success-color: #2ecc71;
-            --light-bg: #f5f6fa;
-        }
-        
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-        
-        .navbar {
-            background: var(--primary-color) !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 0;
-        }
+body {
+    background-color: var(--light-bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
 
-        .logo-img {
-            width: 40px;
-            margin-right: 12px;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease;
-            background: white;
-            margin-bottom: 1rem;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        
-        .metric-card {
-            text-align: center;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .metric-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-            background: var(--light-bg);
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
-        .metric-card h5 {
-            color: var(--primary-color);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .metric-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            margin: 0;
-        }
-        
-        .chart-container {
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            height: 300px;  /* Fixed height for better chart display */
-        }
-        
-        .chart-title {
-            color: var(--primary-color);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-        
-        canvas {
-            margin-bottom: 1rem;
-        }
-        
-        .ecg-chart {
-            background-color: #fafbfc;
-            border-radius: 8px;
-            padding: 10px;
-        }
-        
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .chart-stats {
-            font-size: 0.85rem;
-            color: var(--primary-color);
-        }
+.navbar {
+    background: var(--primary-color) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
 
-        .dashboard-header {
-            margin-bottom: 2rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
+.logo-img {
+    width: 40px;
+    margin-right: 12px;
+}
 
-        .dashboard-title {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-        }
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    background: white;
+    margin-bottom: 1rem;
+}
 
-        .patient-info {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-        }
+.card:hover {
+    transform: translateY(-2px);
+}
 
-        .patient-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-        }
+.metric-card {
+    text-align: center;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        .patient-details h4 {
-            margin: 0;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
+.metric-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    background: var(--light-bg);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
 
-        .patient-details p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
+.metric-card h5 {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.chart-container {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    height: 300px;
+    /* Fixed height for better chart display */
+}
+
+.chart-title {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+canvas {
+    margin-bottom: 1rem;
+}
+
+.ecg-chart {
+    background-color: #fafbfc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.chart-stats {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.patient-info {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.patient-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    object-fit: cover;
+}
+
+.patient-details h4 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.patient-details p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+
+
+.health-card {
+    background: white;
+    border-left: 5px solid var(--accent-color);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    max-width: 800px; /* Controls max width */
+    margin: auto; /* Centers the card */
+    display: flex;
+}
+
+.health-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.suggestions-container {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* Styling for different health suggestion messages */
+.suggestions-container p {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Color-coded suggestion styles */
+.suggestion-info {
+    background: #e3f2fd;
+    color: #0d47a1;
+    border-left: 5px solid #2196f3;
+}
+
+.suggestion-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 5px solid #ffc107;
+}
+
+.suggestion-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 5px solid var(--danger-color);
+}
+
+.suggestion-good {
+    background: #d4edda;
+    color: #155724;
+    border-left: 5px solid var(--success-color);
+}
+
+/* Smooth scrollbar */
+.suggestions-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.suggestions-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.suggestions-container::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+}
+
+.suggestions-container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+/* Responsive width handling */
+@media (max-width: 992px) {
+    .health-card {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .health-card {
+        max-width: 95%;
+    }
+}
