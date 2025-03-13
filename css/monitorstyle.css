@@ -1,0 +1,120 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.patient-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    border: none;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    padding: 15px 20px;
+    font-weight: 600;
+}
+
+.vital-card {
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.vital-card:hover {
+    transform: translateY(-5px);
+}
+
+.vital-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.vital-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.vital-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.ecg-container {
+    position: relative;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    padding: 20px;
+    height: 300px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.alert-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.normal {
+    background-color: #28a745;
+}
+
+.warning {
+    background-color: #ffc107;
+}
+
+.danger {
+    background-color: #dc3545;
+}
+
+.timestamp {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.quick-actions {
+    margin-top: 20px;
+}
+
+.quick-actions .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.history-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}

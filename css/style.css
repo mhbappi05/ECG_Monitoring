@@ -241,3 +241,22 @@ canvas {
         max-width: 95%;
     }
 }
+
+
+
+/* Add to your style.css */
+.message {
+    margin-bottom: 10px;
+}
+
+.text-start {
+    text-align: left;
+}
+
+.text-end {
+    text-align: right;
+    background-color: #f0f8ff;
+    border-radius: 5px;
+}
+
+

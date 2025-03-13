@@ -58,6 +58,14 @@
                 <label for="confirmPassword">Confirm Password</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
             </div>
+            <!-- Role selection (Doctor or Patient) -->
+            <div class="form-group">
+                <label for="role">I am a:</label>
+                <select id="role" name="role" required>
+                    <option value="doctor">Doctor</option>
+                    <option value="patient">Patient</option>
+                </select>
+            </div>
             <button type="submit">Register</button>
         </form>
     </div>
