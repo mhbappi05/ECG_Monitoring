@@ -31,6 +31,39 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $username = $user ? $user['name'] : "Guest";
 
+
+// Fetch doctors' list (only those with 'doctor' role)
+$stmt = $pdo->prepare("SELECT id, name FROM users WHERE role = 'doctor'");
+$stmt->execute();
+$doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Generate HTML for doctor list
+$doctorListHTML = '';
+foreach ($doctors as $doctor) {
+    $doctorListHTML .= '<li><button class="btn btn-link doctor-item" data-doctor-id="' . $doctor['id'] . '">' . htmlspecialchars($doctor['name']) . '</button></li>';
+}
+
+// Fetch the conversation between the logged-in user and the selected doctor
+$conversationMessages = '';
+if (isset($_GET['doctor_id'])) {
+    $doctor_id = $_GET['doctor_id'];  // Get the doctor ID from the URL
+
+    // Fetch messages for the selected doctor
+    $stmt = $pdo->prepare("SELECT sender_id, message, created_at FROM messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY created_at ASC");
+    $stmt->execute([$user_id, $doctor_id, $doctor_id, $user_id]);
+    $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Loop through messages and generate HTML
+    foreach ($messages as $msg) {
+        $senderName = ($msg['sender_id'] == $user_id) ? "You" : "Doctor";
+        $conversationMessages .= "<div class='message'>";
+        $conversationMessages .= "<strong>" . htmlspecialchars($senderName) . ":</strong>";
+        $conversationMessages .= "<p>" . htmlspecialchars($msg['message']) . "</p>";
+        $conversationMessages .= "<small>" . htmlspecialchars($msg['created_at']) . "</small>";
+        $conversationMessages .= "</div>";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +78,7 @@ $username = $user ? $user['name'] : "Guest";
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/chatbot.css"> <!-- Chatbot CSS -->
+    <link rel="stylesheet" href="css/messenger.css"> <!-- messenger CSS -->
 </head>
 
 <body>
@@ -61,7 +95,7 @@ $username = $user ? $user['name'] : "Guest";
         </div>
     </nav>
     <div class="container">
-        
+
 
         <div class="dashboard-header">
             <div class="row align-items-center">
@@ -79,6 +113,39 @@ $username = $user ? $user['name'] : "Guest";
                 class="patient-avatar">
             <div class="patient-details">
                 <h4>Welcome, <?php echo htmlspecialchars($username); ?>!</h4>
+                <a href="#" class="messenger-icon" id="openMessenger">
+                    <h4>Consult with the Doctor</h4>
+                    <i class="bi bi-chat-dots"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Messenger UI -->
+        <div class="messenger-container" id="messengerContainer" style="display: none;">
+            <div class="messenger-header">
+                <h4>Consult with the Doctor</h4>
+                <button class="close-messenger" id="closeMessenger">&times;</button>
+            </div>
+            
+            <!-- Doctor List -->
+            <div id="doctorList" style="display: block;">
+                <h5>Select a Doctor</h5>
+                <ul id="doctorListItems">
+                    <!-- Doctors will be loaded here -->
+                    <?php echo $doctorListHTML; ?>
+                </ul>
+            </div>
+
+            <!-- Chat UI, hidden initially -->
+            <div id="chatUI" style="display: none;">
+                <div class="messenger-body" id="messengerBody">
+                    <!-- Messages will be loaded here -->
+                    <?php echo $conversationMessages; ?>
+                </div>
+                <div class="messenger-footer">
+                    <input type="text" id="messageInput" placeholder="Type your message...">
+                    <button id="sendMessageBtn"><i class="bi bi-send"></i></button>
+                </div>
             </div>
         </div>
 
@@ -184,6 +251,7 @@ $username = $user ? $user['name'] : "Guest";
 
     <script src="js/chatbot.js"></script>
     <script src="js/ecg.js"></script>
+    <script src="js/messenger.js"></script>
 </body>
 
 </html>

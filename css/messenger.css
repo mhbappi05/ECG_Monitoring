@@ -1,0 +1,335 @@
+.messenger-icon {
+    margin-left: 10px;
+    margin-right: 40px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 2.2rem; /* Adjust the size */
+    display: inline-flex;
+    align-items: center;
+    padding: 5px; /* Add some padding */
+    border-radius: 50%; /* Make it circular */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.messenger-icon h4 {
+    margin-right: 10px; /* Add space between text and icon */
+}
+
+.messenger-icon:hover {
+    color: #0f1924;
+    background-color: rgba(0, 123, 255, 0.1); /* Add a subtle background on hover */
+}
+
+.messenger-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 460px;
+    max-width: 90vw;
+    height: 400px;
+    max-height: 80vh;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    border: 1px solid #e6e6e6;
+    transition: all 0.3s ease;
+}
+
+/* Header styling */
+.messenger-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #37598a, #5492a0);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e6e6e6;
+}
+.messenger-header h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.close-messenger {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+
+.close-messenger:hover {
+    transform: scale(1.2);
+}
+
+/* Doctor List Section */
+#doctorList {
+    padding: 15px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+#doctorList h5 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+#doctorListItems {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#doctorListItems li {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#doctorListItems li:hover {
+    background-color: #f5f9ff;
+}
+
+#doctorListItems li.selected {
+    background-color: #e6f2ff;
+}
+
+.doctor-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #e1e1e1;
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.doctor-name {
+    font-weight: 600;
+    margin: 0 0 3px 0;
+    color: #333;
+}
+
+.doctor-specialty {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+
+.doctor-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.doctor-status.online {
+    background-color: #4CAF50;
+}
+
+.doctor-status.offline {
+    background-color: #9e9e9e;
+}
+
+/* Chat UI Section */
+#chatUI {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.messenger-body {
+    flex: 1;
+    padding: 15px;
+    height: 280px;
+    overflow-y: auto;
+    background-color: #F8F9FA;
+}
+
+.message {
+    margin-bottom: 15px;
+    max-width: 80%;
+    clear: both;
+    position: relative;
+}
+
+.message.incoming {
+    float: left;
+}
+
+.message.outgoing {
+    float: right;
+}
+
+.message-content {
+    padding: 12px 15px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.message.incoming .message-content {
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-bottom-left-radius: 4px;
+}
+
+.message.outgoing .message-content {
+    background-color: #e1f5fe;
+    color: #0277bd;
+    border-bottom-right-radius: 4px;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #999;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.message.incoming .message-time {
+    margin-left: 5px;
+}
+
+.message.outgoing .message-time {
+    text-align: right;
+    margin-right: 5px;
+}
+
+/* Loading and error states */
+.message-loading, .message-error, .no-messages, .message-sending {
+    text-align: center;
+    padding: 15px;
+    color: #757575;
+    font-size: 14px;
+}
+
+.message-error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    border-radius: 8px;
+}
+
+.message-sending {
+    color: #888;
+    font-style: italic;
+}
+
+.retry-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 15px;
+    color: #424242;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+    background-color: #bdbdbd;
+}
+
+/* Footer section */
+.messenger-footer {
+    display: flex;
+    padding: 12px 15px;
+    background-color: #fff;
+    border-top: 1px solid #eaeaea;
+}
+
+#messageInput {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: #f5f5f5;
+    outline: none;
+    transition: all 0.2s;
+}
+
+#messageInput:focus {
+    border-color: #000000;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
+}
+
+#sendMessageBtn {
+    background-color: #3a7bd5;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#sendMessageBtn:hover {
+    background-color: #2c5ea0;
+}
+
+#sendMessageBtn i {
+    font-size: 16px;
+}
+
+/* Custom scrollbar for better look */
+.messenger-body::-webkit-scrollbar, #doctorList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messenger-body::-webkit-scrollbar-track, #doctorList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.messenger-body::-webkit-scrollbar-thumb, #doctorList::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.messenger-body::-webkit-scrollbar-thumb:hover, #doctorList::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .messenger-container {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+}

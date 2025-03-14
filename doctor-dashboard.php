@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 // Check if the user is logged in and is a doctor
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'doctor') {
+if (!isset($_SESSION['id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'doctor') {
     header("Location: login.html");
     exit();
 }
@@ -11,40 +11,103 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'doctor') {
 // Fetch the doctor's name from the database
 $doctor_id = $_SESSION['id'];
 $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
-$stmt->bind_param("i", $doctor_id);
-$stmt->execute();
-$stmt->bind_result($doctor_name);
-$stmt->fetch();
-$stmt->close();
+if ($stmt) {
+    $stmt->bind_param("i", $doctor_id);
+    $stmt->execute();
+    $stmt->bind_result($doctor_name);
+    $stmt->fetch();
+    $stmt->close();
+} else {
+    die("Database error: " . mysqli_error($conn));
+}
 
 // Handle search query
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$sql = "SELECT id, name, phone FROM users WHERE role = 'patient' AND (name LIKE ? OR phone LIKE ?)";
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$result = [];
+if (!empty($search)) {
+    $sql = "SELECT id, name, phone FROM users WHERE role = 'patient' AND (name LIKE CONCAT('%', ?, '%') OR phone LIKE CONCAT('%', ?, '%'))";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $searchTerm = "%$search%";
+        $stmt->bind_param("ss", $searchTerm, $searchTerm);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+    }
+}
+
+// Fetch all patients initially
+$sql = "SELECT id, name, phone FROM users WHERE role = 'patient'";
+
+// If a search query is present, filter the results
+if (!empty($search)) {
+    $sql .= " AND (name LIKE CONCAT('%', ?, '%') OR phone LIKE CONCAT('%', ?, '%'))";
+}
+
 $stmt = $conn->prepare($sql);
-$searchTerm = "%$search%";
-$stmt->bind_param("ss", $searchTerm, $searchTerm);
-$stmt->execute();
-$result = $stmt->get_result();
+
+if (!empty($search) && $stmt) {
+    $stmt->bind_param("ss", $search, $search);
+}
+
+if ($stmt) {
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+} else {
+    echo "<p class='text-danger'>Error fetching patients: " . $conn->error . "</p>";
+}
 
 // Handle message submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_message'])) {
     $receiver_id = $_POST['receiver_id'];
-    $message = $_POST['message'];
+    $message = trim($_POST['message']);
 
-    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)");
-    $stmt->bind_param("iis", $doctor_id, $receiver_id, $message);
-    $stmt->execute();
-    $stmt->close();
+    if (!empty($message)) {
+        $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, message, created_at) VALUES (?, ?, ?, NOW())");
+        if ($stmt) {
+            $stmt->bind_param("iis", $doctor_id, $receiver_id, $message);
+            if ($stmt->execute()) {
+                // Redirect to refresh the page and show the new message
+                header("Location: ?patient_id=" . $receiver_id);
+                exit();
+            } else {
+                echo "<script>console.log('Error sending message: " . $stmt->error . "');</script>";
+            }
+            $stmt->close();
+        } else {
+            echo "<script>console.log('Database prepare error: " . $conn->error . "');</script>";
+        }
+    }
 }
 
 // Fetch messages between doctor and patient
+$patient_name = "";
+$messages = null; // Initialize variable
+
 if (isset($_GET['patient_id'])) {
     $patient_id = $_GET['patient_id'];
+
+    // Get patient name
+    $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $patient_id);
+        $stmt->execute();
+        $stmt->bind_result($patient_name);
+        $stmt->fetch();
+        $stmt->close();
+    }
+
+    // Retrieve messages
     $stmt = $conn->prepare("SELECT sender_id, message, created_at FROM messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY created_at ASC");
-    $stmt->bind_param("iiii", $doctor_id, $patient_id, $patient_id, $doctor_id);
-    $stmt->execute();
-    $messages = $stmt->get_result();
-    $stmt->close();
+    if ($stmt) {
+        $stmt->bind_param("iiii", $doctor_id, $patient_id, $patient_id, $doctor_id);
+        $stmt->execute();
+        $messages = $stmt->get_result();
+        $stmt->close();
+    } else {
+        echo "<p class='text-danger'>Error fetching messages: " . $conn->error . "</p>";
+    }
 }
 ?>
 
@@ -77,8 +140,6 @@ if (isset($_GET['patient_id'])) {
         </div>
     </nav>
 
-
-
     <!-- Main Content -->
     <div class="container-fluid p-4">
         <h2>Welcome, Dr. <?= htmlspecialchars($doctor_name) ?></h2>
@@ -103,7 +164,7 @@ if (isset($_GET['patient_id'])) {
                 <h5>Search Results</h5>
             </div>
             <div class="card-body">
-                <?php if ($result->num_rows > 0): ?>
+                <?php if ($result && $result->num_rows > 0): ?>
                     <table class="table table-hover">
                         <thead class="table-dark">
                             <tr>
@@ -118,8 +179,8 @@ if (isset($_GET['patient_id'])) {
                             <?php while ($patient = $result->fetch_assoc()): ?>
                                 <tr>
                                     <td><?= $patient['id'] ?></td>
-                                    <td><?= $patient['name'] ?></td>
-                                    <td><?= $patient['phone'] ?></td>
+                                    <td><?= htmlspecialchars($patient['name']) ?></td>
+                                    <td><?= htmlspecialchars($patient['phone']) ?></td>
                                     <td><a href="monitor_patient.php?id=<?= $patient['id'] ?>"
                                             class="btn btn-success btn-sm">Monitor</a></td>
                                     <td><a href="?patient_id=<?= $patient['id'] ?>" class="btn btn-info btn-sm">Message</a></td>
@@ -134,25 +195,34 @@ if (isset($_GET['patient_id'])) {
         </div>
 
         <!-- Message Panel -->
-        <?php if (isset($patient_id)): ?>
+        <?php if (isset($_GET['patient_id'])): ?>
             <div class="card mt-4">
                 <div class="card-header bg-secondary text-white">
-                    <h5>Chat with <?= htmlspecialchars($patient_id) ?></h5>
+                    <h5>Chat with <?= htmlspecialchars($patient_name) ?></h5>
                 </div>
-                <div class="card-body" style="max-height: 300px; overflow-y: scroll;">
-                    <?php while ($message = $messages->fetch_assoc()): ?>
-                        <div class="message <?= $message['sender_id'] == $doctor_id ? 'text-end' : 'text-start' ?>">
-                            <p><strong><?= $message['sender_id'] == $doctor_id ? 'Dr. ' . htmlspecialchars($doctor_name) : 'Patient' ?>:</strong>
-                                <?= htmlspecialchars($message['message']) ?></p>
-                            <small class="text-muted"><?= $message['created_at'] ?></small>
-                        </div>
-                    <?php endwhile; ?>
+                <div class="card-body" id="messages-container" style="max-height: 300px; overflow-y: scroll;">
+                    <?php
+                    if ($messages && $messages->num_rows > 0) {
+                        while ($message = $messages->fetch_assoc()) {
+                            $isSender = $message['sender_id'] == $doctor_id;
+                            $messageClass = $isSender ? 'text-end' : 'text-start';
+                            $nameDisplay = $isSender ? 'Dr. ' . htmlspecialchars($doctor_name) : htmlspecialchars($patient_name);
+                            
+                            echo '<div class="message ' . $messageClass . ' mb-3">';
+                            echo '<p class="mb-1"><strong>' . $nameDisplay . ':</strong> ' . htmlspecialchars($message['message']) . '</p>';
+                            echo '<small class="text-muted">' . $message['created_at'] . '</small>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>No messages yet. Start the conversation!</p>';
+                    }
+                    ?>
                 </div>
 
                 <!-- Send Message -->
                 <div class="card-footer">
                     <form method="POST">
-                        <input type="hidden" name="receiver_id" value="<?= $patient_id ?>">
+                        <input type="hidden" name="receiver_id" value="<?= $_GET['patient_id'] ?>">
                         <textarea name="message" class="form-control" rows="3" required></textarea>
                         <button type="submit" name="send_message" class="btn btn-primary mt-2">Send Message</button>
                     </form>
@@ -160,10 +230,15 @@ if (isset($_GET['patient_id'])) {
             </div>
         <?php endif; ?>
     </div>
+    
     <script>
-        document.getElementById("logoutButton").addEventListener("click", function () {
-            window.location.href = "login.html";
-        });
+        // Auto-scroll to the bottom of the messages container
+        window.onload = function() {
+            var messagesContainer = document.getElementById('messages-container');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        };
     </script>
 </body>
 
