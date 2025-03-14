@@ -47,8 +47,9 @@ $patient = $result->fetch_assoc();
     <!-- Navigation Bar -->
     <nav class="navbar navbar-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">
-            <img src="https://cdn-icons-png.flaticon.com/512/2785/2785544.png" alt="ECG Logo" class="logo-img"></i>ECG Monitoring Dashboard</a>
+            <a class="navbar-brand" href="doctor-dashboard.php">
+                <img src="https://cdn-icons-png.flaticon.com/512/2785/2785544.png" alt="ECG Logo"
+                    class="logo-img"></i>ECG Monitoring Dashboard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -255,10 +256,10 @@ $patient = $result->fetch_assoc();
 
             <!-- Quick actions -->
             <div class="quick-actions">
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactPatientModal">
                     <i class="fas fa-phone me-1"></i> Contact Patient
                 </button>
-                <button class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prescribeMedicationModal">
                     <i class="fas fa-prescription me-1"></i> Prescribe Medication
                 </button>
                 <button class="btn btn-outline-primary">
@@ -270,6 +271,59 @@ $patient = $result->fetch_assoc();
                 <a href="doctor-dashboard.php" class="btn btn-outline-secondary float-end">
                     <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                 </a>
+            </div>
+            <!-- Contact Patient Modal -->
+            <div class="modal fade" id="contactPatientModal" tabindex="-1" aria-labelledby="contactPatientModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="contactPatientModalLabel">Contact Patient</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Name:</strong> <?= htmlspecialchars($patient['name']) ?></p>
+                            <p><strong>Phone Number:</strong> <?= htmlspecialchars($patient['phone']) ?></p>
+                            <div class="mb-3">
+                                <label for="messageText" class="form-label">Message</label>
+                                <textarea class="form-control" id="messageText" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="sendMessageButton">Send Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prescribe Medication Modal -->
+            <div class="modal fade" id="prescribeMedicationModal" tabindex="-1"
+                aria-labelledby="prescribeMedicationModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="prescribeMedicationModalLabel">Prescribe Medication</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Name:</strong> <?= htmlspecialchars($patient['name']) ?></p>
+                            <p><strong>Phone Number:</strong> <?= htmlspecialchars($patient['phone']) ?></p>
+                            <div class="mb-3">
+                                <label for="medicationText" class="form-label">Medication</label>
+                                <textarea class="form-control" id="medicationText" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="extraNoteText" class="form-label">Extra Note</label>
+                                <textarea class="form-control" id="extraNoteText" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="sendMedicationButton">Send Medication</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         <?php else: ?>
@@ -284,6 +338,7 @@ $patient = $result->fetch_assoc();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Update the last updated time every minute
         function updateTime() {
@@ -305,6 +360,51 @@ $patient = $result->fetch_assoc();
 
         document.getElementById("logoutButton").addEventListener("click", function () {
             window.location.href = "login.html";
+        });
+        // Send message to patient
+        document.getElementById("sendMessageButton").addEventListener("click", function () {
+            const messageText = document.getElementById("messageText").value;
+            const patientId = <?= $patient_id ?>;
+
+            $.ajax({
+                url: 'send_message_Contact_patient.php',
+                type: 'POST',
+                data: {
+                    patient_id: patientId,
+                    message: messageText
+                },
+                success: function (response) {
+                    alert('Message sent successfully!');
+                    $('#contactPatientModal').modal('hide');
+                },
+                error: function () {
+                    alert('Failed to send message. Please try again.');
+                }
+            });
+        });
+        // Send medication to patient
+        document.getElementById("sendMedicationButton").addEventListener("click", function () {
+            const medicationText = document.getElementById("medicationText").value;
+            const extraNoteText = document.getElementById("extraNoteText").value;
+            const patientId = <?= $patient_id ?>;
+
+            const message = `**Medication Prescribed**\n\n**Medication:** ${medicationText}\n**Note:** ${extraNoteText}`;
+
+            $.ajax({
+                url: 'send_message_pescribe_medi.php',
+                type: 'POST',
+                data: {
+                    patient_id: patientId,
+                    message: message
+                },
+                success: function (response) {
+                    alert('Medication prescribed successfully!');
+                    $('#prescribeMedicationModal').modal('hide');
+                },
+                error: function () {
+                    alert('Failed to prescribe medication. Please try again.');
+                }
+            });
         });
     </script>
 </body>
