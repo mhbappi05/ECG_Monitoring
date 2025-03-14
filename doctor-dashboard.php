@@ -70,9 +70,10 @@ if (isset($_GET['patient_id'])) {
                 ECG Monitoring Dashboard
             </a>
             <!-- Added logout button -->
-            <button class="btn btn-outline-light" id="logoutButton">
+            <button class="btn btn-outline-light" id="logoutButton" onclick="window.location.href='logout.php';">
                 <i class="bi bi-box-arrow-right"></i> Log Out
             </button>
+
         </div>
     </nav>
 
@@ -159,7 +160,11 @@ if (isset($_GET['patient_id'])) {
             </div>
         <?php endif; ?>
     </div>
-
+    <script>
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            window.location.href = "login.html";
+        });
+    </script>
 </body>
 
 </html>

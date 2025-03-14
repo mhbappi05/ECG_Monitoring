@@ -39,15 +39,16 @@ $patient = $result->fetch_assoc();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/monitorstyle.css">
+    <link rel="stylesheet" href="css/doctorstyle.css">
 </head>
 
 <body>
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-heartbeat me-2"></i>ECG Monitoring Dashboard</a>
+            <img src="https://cdn-icons-png.flaticon.com/512/2785/2785544.png" alt="ECG Logo" class="logo-img"></i>ECG Monitoring Dashboard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -64,9 +65,10 @@ $patient = $result->fetch_assoc();
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a href="logout.php" class="btn btn-outline-light">
-                        <i class="fas fa-sign-out-alt me-1"></i> Logout
-                    </a>
+                    <button class="btn btn-outline-light" id="logoutButton"
+                        onclick="window.location.href='logout.php';">
+                        <i class="bi bi-box-arrow-right"></i> Log Out
+                    </button>
                 </div>
             </div>
         </div>
@@ -300,6 +302,10 @@ $patient = $result->fetch_assoc();
 
         setInterval(updateTime, 60000);
         updateTime();
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            window.location.href = "login.html";
+        });
     </script>
 </body>
 
