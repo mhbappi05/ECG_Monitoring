@@ -40,6 +40,8 @@ $patient = $result->fetch_assoc();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/monitorstyle.css">
     <link rel="stylesheet" href="css/doctorstyle.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -162,10 +164,12 @@ $patient = $result->fetch_assoc();
                 </div>
                 <div class="card-body p-0">
                     <div class="ecg-container">
-                        <img src="ecg_placeholder.jpg" class="img-fluid" alt="ECG Graph">
+                        <canvas id="ecgChart" class="img-fluid"></canvas>
                     </div>
                 </div>
             </div>
+
+
 
             <!-- Additional patient data -->
             <div class="row">
@@ -406,6 +410,59 @@ $patient = $result->fetch_assoc();
                 }
             });
         });
+
+        // Dummy ECG Data (This would be replaced with real data in a real implementation)
+        let ecgData = {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], // Time or index labels
+            datasets: [{
+                label: 'ECG Data',
+                data: [0, 10, 5, 2, 20, 30, 45, 40, 60, 90], // Example ECG data points
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+
+        // Render the ECG chart
+        const ctx = document.getElementById('ecgChart').getContext('2d');
+        const ecgChart = new Chart(ctx, {
+            type: 'line', // Line chart for ECG
+            data: ecgData,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    },
+                    y: {
+                        min: -10,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 0, // Instant update, for real-time data
+                }
+            }
+        });
+
+        // Function to update the ECG chart with new data
+        function updateECGGraph(newData) {
+            ecgChart.data.datasets[0].data.push(newData);
+            ecgChart.data.labels.push(ecgChart.data.labels.length); // Update labels (time)
+            if (ecgChart.data.datasets[0].data.length > 10) {
+                ecgChart.data.datasets[0].data.shift(); // Remove the first data point if it's too long
+                ecgChart.data.labels.shift(); // Remove corresponding label
+            }
+            ecgChart.update();
+        }
+
+        // Simulate adding new ECG data every 2 seconds
+        setInterval(() => {
+            let randomData = Math.floor(Math.random() * 100); // Simulate new data
+            updateECGGraph(randomData);
+        }, 2000);
+
     </script>
 </body>
 
