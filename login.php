@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit();
         } else {
-            echo "Invalid credentials. <a href='index.html'>Try again</a>";
+            echo "Invalid credentials. <a href='login.html'>Try again</a>";
         }
     } else {
         echo "No user found with this phone number.";

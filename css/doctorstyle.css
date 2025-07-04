@@ -1,259 +1,296 @@
 /* Main Styles for ECG Monitoring System */
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --success-color: #2ecc71;
-    --warning-color: #f39c12;
-    --light-gray: #f5f5f5;
-    --medium-gray: #e0e0e0;
-    --dark-gray: #95a5a6;
-    --text-color: #34495e;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  body {
-    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-    color: var(--text-color);
-    background-color: #f8f9fa;
-    line-height: 1.6;
-  }
-  
-  /* Navbar styling */
-  .navbar {
-    background-color: var(--primary-color);
-    padding: 0.8rem 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navbar-brand {
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  
-  .logo-img {
-    height: 2.5rem;
-    width: auto;
-  }
-  
-  #logoutButton {
-    border-color: rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
-  }
-  
-  #logoutButton:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Dashboard header */
-  .dashboard-header {
-    margin-bottom: 1.5rem;
-  }
-  
-  .dashboard-title {
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Patient information */
-  .patient-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: var(--card-shadow);
-  }
-  
-  .patient-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-right: 1rem;
-  }
-  
-  .patient-details h4 {
-    margin-bottom: 0.25rem;
-    color: var(--primary-color);
-  }
-  
-  /* Card styling */
-  .card {
-    border: none;
-    border-radius: 8px;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-  }
-  
-  .card-header {
-    background-color: white;
-    border-bottom: 1px solid var(--medium-gray);
-    padding: 1rem;
-  }
-  
-  .card-body {
-    padding: 1.25rem;
-  }
-  
-  
+    --primary-color: #2c3e50; /* Dark blue for primary elements */
+    --secondary-color: #27ae60; /* Subtle green for accents */
+    --accent-color: #f39c12; /* Warm yellow for alerts */
+    --success-color: #2ecc71; /* Green for success states */
+    --warning-color: #f39c12; /* Yellow for warnings */
+    --light-gray: #ecf0f1; /* Light background color for cards */
+    --medium-gray: #bdc3c7; /* Gray for borders and text */
+    --dark-gray: #34495e; /* Dark text color */
+    --text-color: #2c3e50; /* Text color for high contrast */
+    --card-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    --border-radius: 12px; /* Rounded corners for a soft design */
+    --chat-bubble-radius: 18px; /* Rounded chat bubble */
+}
 
- 
-  
-  /* Doctor Dashboard Specific Styles */
-  .card-header.bg-primary {
-    background-color: var(--primary-color) !important;
-  }
-  
-  .card-header.bg-secondary {
-    background-color: var(--secondary-color) !important;
-  }
-  
-  .table-dark {
+body {
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Navbar Styling */
+.navbar {
     background-color: var(--primary-color);
-  }
-  
-  .table-hover tbody tr:hover {
-    background-color: rgba(52, 152, 219, 0.1);
-  }
-  
-  .btn-success {
-    background-color: var(--success-color);
-    border-color: var(--success-color);
-  }
-  
-  .btn-info {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    padding: 1.2rem 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    font-size: 1.7rem;
     color: white;
-  }
-  
-  .btn-primary {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-img {
+    height: 3rem;
+    width: auto;
+}
+
+#logoutButton {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: bold;
+}
+
+#logoutButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Card Styles */
+.card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    background-color: white;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
     background-color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-  
-  .btn-primary:hover, .btn-success:hover, .btn-info:hover {
-    filter: brightness(110%);
-  }
-  
-  /* Message panel */
-  .message {
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-  }
-  
-  .text-start.message {
+    color: white;
+    padding: 1rem;
+    border-bottom: 2px solid var(--medium-gray);
+}
+
+.card-body {
+    padding: 1.5rem;
     background-color: var(--light-gray);
-    max-width: 80%;
-  }
-  
-  .text-end.message {
-    background-color: var(--secondary-color);
+}
+
+/* Chat Box Styles */
+#messages-container {
+    height: 450px;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    background: #f4f7fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    position: relative;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Message Bubbles */
+.message {
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 18px;
+    display: block; /* Ensure messages stack vertically */
+    word-wrap: break-word;
+    max-width: 50%;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Doctor's Messages */
+.text-end.message {
+    background: linear-gradient(to right, #27ae60, #2ecc71); /* Green gradient */
     color: white;
-    max-width: 80%;
-    margin-left: auto;
-  }
-  
-  .text-muted {
-    font-size: 0.75rem;
-    opacity: 0.7;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .metric-card {
-      margin-bottom: 1rem;
-    }
-    
-    .chatbot-container {
-      bottom: 10px;
-      right: 10px;
-    }
-    
-    .chatbox {
-      width: 90vw;
-      height: 70vh;
-      bottom: 70px;
-    }
-  }
-  
-  /* Animation effects */
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-  
-  .metric-card:nth-child(1) .metric-icon {
-    color: var(--accent-color);
-  }
-  
-  .metric-card:nth-child(2) .metric-icon {
-    color: var(--success-color);
-  }
-  
-  .metric-card:nth-child(3) .metric-icon {
-    color: var(--warning-color);
-  }
-  
-  .metric-card:nth-child(4) .metric-icon {
-    color: var(--secondary-color);
-  }
-  
-  /* Alerts for critical values */
-  .critical-high {
-    color: #e74c3c !important;
-    animation: pulse 1s infinite;
-  }
-  
-  .critical-low {
-    color: #3498db !important;
-    animation: pulse 1s infinite;
-  }
-  
-  /* Enhanced Table Styling */
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-  
-  table th, table td {
-    padding: 0.75rem 1rem;
-  }
-  
-  table th {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.05rem;
-  }
-  
-  table tbody tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-  
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
+    margin-left: auto; /* Align messages to the right */
+    border-radius: 18px 18px 0 18px;
+    max-width: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.text-end.message:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #2ecc71, #27ae60); /* Hover effect */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Patient's Messages */
+.text-start.message {
+    background: linear-gradient(to right, #ecf0f1, #bdc3c7); /* Light gray gradient */
+    color: #34495e;
+    padding: 1rem;
+    border-radius: 18px 18px 18px 0;
+    max-width: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.text-start.message:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #bdc3c7, #ecf0f1); /* Hover effect */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Send Message Section */
+.card-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #bdc3c7;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center; /* Align the items vertically in the center */
+    gap: 1rem; /* Add space between the input and button */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0 0 15px 15px;
+}
+
+/* Input Textarea (Wider, Spacious) */
+.card-footer form {
+    display: flex;
+    width: 95%;
+    gap: 1rem; /* Adds gap between textarea and button */
+    align-items: center; /* Ensure button and textarea are vertically aligned */
+}
+
+.card-footer form textarea {
+    flex-grow: 1; /* Allow textarea to take remaining space */
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 2px solid #bdc3c7;
+    resize: none;
+    background-color: #ffffff;
+    font-size: 1.2rem;
+    height: 60px; /* Set height to match the button */
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-footer form textarea:focus {
+    border-color: #27ae60;
+    outline: none;
+    box-shadow: 0 0 8px rgba(39, 174, 96, 0.5);
+}
+
+/* Send Button */
+.card-footer form button {
+    padding: 1.8rem; /* Adjust button padding */
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    height: 30px; /* Set height to match the textarea */
+    display: flex;  /* Ensure button content is centered */
+    align-items: center;  /* Vertically center content */
+    min-width: 175px; /* Make sure the button has a fixed minimum width */
+}
+
+.card-footer form button:hover {
+    background-color: #2ecc71; /* Bright green on hover */
+    transform: scale(1.05);
+}
+
+.card-footer form button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: var(--dark-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
     border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
+}
+
+::-webkit-scrollbar-thumb:hover {
     background: #7f8c8d;
-  }
+}
+
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .card-footer {
+        padding: 1rem;
+    }
+    .message {
+        max-width: 90%; /* Allow more width for smaller screens */
+    }
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .card-footer {
+        padding: 1rem;
+    }
+    .message {
+        max-width: 90%; /* Allow more width for smaller screens */
+    }
+    .card-body {
+        padding: 1rem;
+    }
+}
+/* Button Styles */
+.btn {
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-info {
+    background: linear-gradient(to left, #17a2b8, #00bcd4);
+    border: none;
+}
+
+.btn-info:hover {
+    background: linear-gradient(to left, #138496, #0097a7);
+}
+
+.btn-success {
+    background: linear-gradient(to left, #28a745, #66bb6a);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(to left, #218838, #388e3c);
+}
+
+.btn-primary {
+    background: linear-gradient(to left, #007bff, #00bcd4);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to left, #0056b3, #006bb3);
+}

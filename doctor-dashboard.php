@@ -23,9 +23,10 @@ if ($stmt) {
 
 // Handle search query
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$result = [];
+
 if (!empty($search)) {
-    $sql = "SELECT id, name, phone FROM users WHERE role = 'patient' AND (name LIKE CONCAT('%', ?, '%') OR phone LIKE CONCAT('%', ?, '%'))";
+    // Search for patients matching name or phone
+    $sql = "SELECT id, name, phone FROM users WHERE role = 'patient' AND (name LIKE ? OR phone LIKE ?)";
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $searchTerm = "%$search%";
@@ -33,30 +34,18 @@ if (!empty($search)) {
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
+    } else {
+        echo "<p class='text-danger'>Error fetching patients: " . $conn->error . "</p>";
+    }
+} else {
+    // Fetch all patients if no search
+    $sql = "SELECT id, name, phone FROM users WHERE role = 'patient'";
+    $result = $conn->query($sql);
+    if (!$result) {
+        echo "<p class='text-danger'>Error fetching patients: " . $conn->error . "</p>";
     }
 }
 
-// Fetch all patients initially
-$sql = "SELECT id, name, phone FROM users WHERE role = 'patient'";
-
-// If a search query is present, filter the results
-if (!empty($search)) {
-    $sql .= " AND (name LIKE CONCAT('%', ?, '%') OR phone LIKE CONCAT('%', ?, '%'))";
-}
-
-$stmt = $conn->prepare($sql);
-
-if (!empty($search) && $stmt) {
-    $stmt->bind_param("ss", $search, $search);
-}
-
-if ($stmt) {
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $stmt->close();
-} else {
-    echo "<p class='text-danger'>Error fetching patients: " . $conn->error . "</p>";
-}
 
 // Handle message submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_message'])) {
@@ -120,9 +109,8 @@ if (isset($_GET['patient_id'])) {
     <title>Doctor Dashboard | ECG Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="css/doctorstyle.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
@@ -132,35 +120,30 @@ if (isset($_GET['patient_id'])) {
                 <img src="https://cdn-icons-png.flaticon.com/512/2785/2785544.png" alt="ECG Logo" class="logo-img">
                 ECG Monitoring Dashboard
             </a>
-            <!-- Added logout button -->
-            <button class="btn btn-outline-light" id="logoutButton" onclick="window.location.href='logout.php';">
+            <button class="btn btn-outline-light" onclick="window.location.href='logout.php';">
                 <i class="bi bi-box-arrow-right"></i> Log Out
             </button>
-
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container-fluid p-4">
         <h2>Welcome, Dr. <?= htmlspecialchars($doctor_name) ?></h2>
 
-        <!-- Search Patient -->
         <div class="card mt-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header text-white">
                 <h5>Search for a Patient</h5>
             </div>
             <div class="card-body">
                 <form method="GET" class="d-flex">
                     <input type="text" name="search" class="form-control me-2" placeholder="Search by name or phone"
-                        value="<?= htmlspecialchars($search) ?>" required>
+                        value="<?= htmlspecialchars($search) ?>">
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
             </div>
         </div>
 
-        <!-- Patient Search Results -->
         <div class="card mt-4">
-            <div class="card-header bg-secondary text-white">
+            <div class="card-header text-white">
                 <h5>Search Results</h5>
             </div>
             <div class="card-body">
@@ -183,7 +166,14 @@ if (isset($_GET['patient_id'])) {
                                     <td><?= htmlspecialchars($patient['phone']) ?></td>
                                     <td><a href="monitor_patient.php?id=<?= $patient['id'] ?>"
                                             class="btn btn-success btn-sm">Monitor</a></td>
-                                    <td><a href="?patient_id=<?= $patient['id'] ?>" class="btn btn-info btn-sm">Message</a></td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#messageModal" data-patient-id="<?= $patient['id'] ?>"
+                                            data-patient-name="<?= htmlspecialchars($patient['name']) ?>">
+                                            Message
+                                        </button>
+
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
@@ -193,53 +183,33 @@ if (isset($_GET['patient_id'])) {
                 <?php endif; ?>
             </div>
         </div>
+    </div>
 
-        <!-- Message Panel -->
-        <?php if (isset($_GET['patient_id'])): ?>
-            <div class="card mt-4">
-                <div class="card-header bg-secondary text-white">
-                    <h5>Chat with <?= htmlspecialchars($patient_name) ?></h5>
+    <!-- Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientName"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="card-body" id="messages-container" style="max-height: 300px; overflow-y: scroll;">
-                    <?php
-                    if ($messages && $messages->num_rows > 0) {
-                        while ($message = $messages->fetch_assoc()) {
-                            $isSender = $message['sender_id'] == $doctor_id;
-                            $messageClass = $isSender ? 'text-end' : 'text-start';
-                            $nameDisplay = $isSender ? 'Dr. ' . htmlspecialchars($doctor_name) : htmlspecialchars($patient_name);
-                            
-                            echo '<div class="message ' . $messageClass . ' mb-3">';
-                            echo '<p class="mb-1"><strong>' . $nameDisplay . ':</strong> ' . htmlspecialchars($message['message']) . '</p>';
-                            echo '<small class="text-muted">' . $message['created_at'] . '</small>';
-                            echo '</div>';
-                        }
-                    } else {
-                        echo '<p>No messages yet. Start the conversation!</p>';
-                    }
-                    ?>
+                <div class="modal-body" id="messages-container" style="max-height: 300px; overflow-y: scroll;">
+                    <!-- Messages will be loaded here -->
                 </div>
-
-                <!-- Send Message -->
-                <div class="card-footer">
-                    <form method="POST">
-                        <input type="hidden" name="receiver_id" value="<?= $_GET['patient_id'] ?>">
-                        <textarea name="message" class="form-control" rows="3" required></textarea>
-                        <button type="submit" name="send_message" class="btn btn-primary mt-2">Send Message</button>
+                <div class="modal-footer">
+                    <form id="chatForm" style="display: flex; width: 100%; gap: 1rem; align-items: center;">
+                        <input type="hidden" name="receiver_id" id="receiver_id">
+                        <textarea name="message" class="form-control" rows="3" required
+                            style="flex-grow: 1; height: 50px; border-radius: 12px; border: 2px solid #bdc3c7;"></textarea>
+                        <button type="submit" class="btn btn-success">Send Message</button>
                     </form>
                 </div>
             </div>
-        <?php endif; ?>
+        </div>
     </div>
-    
-    <script>
-        // Auto-scroll to the bottom of the messages container
-        window.onload = function() {
-            var messagesContainer = document.getElementById('messages-container');
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        };
-    </script>
+
+
+    <script src="js/doctor_messenger.js"></script>
 </body>
 
 </html>
